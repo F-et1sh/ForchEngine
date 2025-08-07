@@ -2,7 +2,7 @@
 
 ---
 
-<img src="/ForchEngine/Icons/icon.png?ver=2" width="32" height="32" />
+<img src="/ForchEngine/Icons/icon.png?ver=2" width="512" height="512" />
 
 ## About
 
