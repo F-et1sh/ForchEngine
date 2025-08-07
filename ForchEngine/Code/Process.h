@@ -34,11 +34,11 @@ concept CValue = requires(T type)
 class ProcessScanner {
 public:
     ProcessScanner() = default;
-    ~ProcessScanner() = default;
+    ~ProcessScanner();
 
     void FindProcess(const std::wstring& process_name);
 
-    void IsValid();
+    void ValidateOrThrow();
 
     void Scan();
     void Filter(Value new_value);

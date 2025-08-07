@@ -83,7 +83,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)ForchEngine\OpenGL\lib x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -123,7 +123,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)ForchEngine\OpenGL\lib x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>

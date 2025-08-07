@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Process.h"
 
+ProcessScanner::~ProcessScanner() {
+    CloseHandle(m_ProcessHandle);
+}
+
 void ProcessScanner::FindProcess(const std::wstring& process_name) {
     m_ProcessName = process_name;
     if (m_ProcessName.empty()) {
@@ -18,7 +22,7 @@ void ProcessScanner::FindProcess(const std::wstring& process_name) {
     }
 }
 
-void ProcessScanner::IsValid() {
+void ProcessScanner::ValidateOrThrow() {
     if (m_ProcessName.empty())        throw std::runtime_error("Process name was empty");
     if (!m_ProcessID)                 throw std::runtime_error("Process ID was zero");
     if (!m_ProcessHandle)             throw std::runtime_error("Process handle was zero");
@@ -26,7 +30,7 @@ void ProcessScanner::IsValid() {
 }
 
 void ProcessScanner::Scan() {
-    this->IsValid();
+    this->ValidateOrThrow();
 
     Value epsilon = 0.0;
 
@@ -51,7 +55,7 @@ void ProcessScanner::Scan() {
 }
 
 void ProcessScanner::Filter(Value new_value) {
-    this->IsValid();
+    this->ValidateOrThrow();
 
     Value epsilon = 0.0;
 
@@ -76,12 +80,12 @@ void ProcessScanner::Filter(Value new_value) {
 }
 
 void ProcessScanner::Write(Value new_value) {
-    this->IsValid();
+    this->ValidateOrThrow();
     WriteValue(m_ProcessHandle, m_FoundAddresses.back().address, m_ScanType, new_value);
 }
 
 void ProcessScanner::Write(uintptr_t address, ScanType type, Value value) {
-    this->IsValid();
+    this->ValidateOrThrow();
     WriteValue(m_ProcessHandle, address, type, value);
 }
 
