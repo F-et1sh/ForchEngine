@@ -29,7 +29,17 @@ bool InputText(const std::string& label, std::string& value, int text_width = 10
 }
 
 void UI::Render() {
-    ImGui::Begin("##ui", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoBringToFrontOnFocus |
+        ImGuiWindowFlags_NoNavFocus;
+
+    ImGui::Begin("##ui", nullptr, flags);
 
     switch (this->m_ProcessScanner->GetState()) {
     case ScanState::InputProcessName: {
@@ -55,7 +65,7 @@ void UI::Render() {
     }
 
     if (!m_ErrorLog.empty()) {
-        ImGui::Text("ERROR : %s", m_ErrorLog.c_str());
+        ImGui::TextColored(ImVec4(0.9f, 0.22f, 0.2f, 1.00f), "ERROR : %s", m_ErrorLog.c_str());
     }
 
     for (auto& variable : m_ProcessScanner->GetFoundVariables()) {
@@ -84,7 +94,7 @@ void UI::OnInputProcessName() {
     
     ImGui::BeginChild("##window", content_size, false, ImGuiWindowFlags_NoScrollbar);
     
-    if (InputText("Enter process name", m_EnteringProcessName, content_size.x - 20))
+    if (InputText("Enter process name", m_EnteringProcessName, content_size.x - 155))
         m_ErrorLog.clear();
 
     ImGui::Spacing();

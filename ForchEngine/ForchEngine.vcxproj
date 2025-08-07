@@ -80,7 +80,7 @@
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;$(SolutionDir)ForchEngine\STB Image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -101,7 +101,7 @@
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;$(SolutionDir)ForchEngine\STB Image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -120,7 +120,7 @@
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;$(SolutionDir)ForchEngine\STB Image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ForchEngine\Code;$(SolutionDir)ForchEngine\imgui;$(SolutionDir)ForchEngine\OpenGL\include;$(SolutionDir)ForchEngine\For Engine 2D;$(SolutionDir)ForchEngine\STB Image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -227,6 +227,7 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="STB Image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="imgui\imgui_LICENSE.txt" />
@@ -235,12 +236,27 @@
     <CopyFileToFolders Include="OpenGL\GLEW_LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Fonts\OpenSans\OpenSans_License.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="Fonts\OpenSans\open_sans.ttf">
+    <None Include="Fonts\OpenSans\OpenSans_License.txt" />
+    <CopyFileToFolders Include="imgui.ini">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fonts\OpenSans\open_sans.ttf">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="STB Image\STB_Image_License (MIT).txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Icons\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Icons\icon2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Icons\icon3.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

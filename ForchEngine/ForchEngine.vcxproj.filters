@@ -25,6 +25,15 @@
     <Filter Include="Fonts">
       <UniqueIdentifier>{caa9f188-2f3a-4864-97f9-a5fa95e5f1b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{77a0522a-3f14-4e15-852b-06b4a8ad7998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\STB Image">
+      <UniqueIdentifier>{0ea3f434-9bf5-4d26-b496-98dd0311f933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Icons">
+      <UniqueIdentifier>{19e9ab67-b8d8-4fa8-b3c7-e9519107a556}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -104,6 +113,9 @@
     <ClInclude Include="Code\UI.h">
       <Filter>Code\UI</Filter>
     </ClInclude>
+    <ClInclude Include="STB Image\stb_image.h">
+      <Filter>Code\STB Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="imgui\imgui_LICENSE.txt">
@@ -112,11 +124,28 @@
     <CopyFileToFolders Include="OpenGL\GLEW_LICENSE.txt">
       <Filter>Licenses</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Fonts\OpenSans\OpenSans_License.txt">
+    <CopyFileToFolders Include="imgui.ini">
+      <Filter>ImGui</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="STB Image\STB_Image_License (MIT).txt">
       <Filter>Licenses</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Fonts\OpenSans\open_sans.ttf">
-      <Filter>Fonts</Filter>
+    <CopyFileToFolders Include="Icons\icon.png">
+      <Filter>Icons</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Icons\icon2.png">
+      <Filter>Icons</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Icons\icon3.png">
+      <Filter>Icons</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fonts\OpenSans\open_sans.ttf">
+      <Filter>Fonts</Filter>
+    </None>
+    <None Include="Fonts\OpenSans\OpenSans_License.txt">
+      <Filter>Licenses</Filter>
+    </None>
   </ItemGroup>
 </Project>
