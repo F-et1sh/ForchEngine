@@ -2,7 +2,7 @@
 
 ---
 
-![ForchEngine](/ForchEngine/Icons/icon.png)
+<img src="/ForchEngine/Icons/icon.png?ver=2" width="512" height="512" />
 
 ## About
 
