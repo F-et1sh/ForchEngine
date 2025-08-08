@@ -33,7 +33,7 @@ Window::Window(size_t resolution_x, size_t resolution_y, const std::string& titl
     }
 
     GLFWimage images[1];
-    images[0].pixels = stbi_load("icon3.png", &images[0].width, &images[0].height, 0, 4);
+    images[0].pixels = stbi_load("Icons/icon3.png", &images[0].width, &images[0].height, 0, 4);
     glfwSetWindowIcon(m_Window, 1, images);
     stbi_image_free(images[0].pixels);
 
