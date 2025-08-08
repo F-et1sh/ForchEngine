@@ -1,5 +1,4 @@
 #pragma once
-#include <boost/pool/pool_alloc.hpp>
 
 using ProcessID = DWORD;
 using ProcessHandle = HANDLE;
@@ -20,7 +19,7 @@ struct FoundVariable {
     Value value = 0.0;
 };
 
-using FoundAddressesContainer = std::vector<FoundAddress, boost::fast_pool_allocator<FoundAddress>>;
+using FoundAddressesContainer = std::vector<FoundAddress>;
 using FoundVariablesContainer = std::vector<FoundVariable>;
 
 template<typename T>

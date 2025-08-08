@@ -130,10 +130,9 @@ void UI::OnInputVariable() {
     if (m_ProcessScanner->GetScanType() != ScanType::None)
         ImGui::Text("Input variable value");
 
-    static Value value = 0.0;
-    InputValue(m_ProcessScanner->GetScanType(), value);
+    InputValue(m_ProcessScanner->GetScanType(), m_InputValue);
 
-    m_ProcessScanner->SetValue(value);
+    m_ProcessScanner->SetValue(m_InputValue);
 
     if (m_ProcessScanner->GetScanType() != ScanType::None && ImGui::Button("Search")) {
         m_ProcessScanner->SetState(ScanState::Scanning);
@@ -182,18 +181,27 @@ void UI::OnFiltering() {
 
     ImGui::Text("Input new value in game");
 
-    static Value value = 0.0;
-    InputValue(m_ProcessScanner->GetScanType(), value);
+    InputValue(m_ProcessScanner->GetScanType(), m_InputValue);
 
     if (ImGui::Button("Filter")) {
         m_ErrorLog.clear();
         try {
-            m_ProcessScanner->Filter(value);
+            m_ProcessScanner->Filter(m_InputValue);
         }
         catch (const std::exception& e) {
             m_ErrorLog = e.what();
             m_ProcessScanner->SetState(ScanState::InputProcessName);
         }
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Back")) {
+        m_ErrorLog.clear();
+        m_ProcessScanner->SetState(ScanState::InputVariable);
+        m_ProcessScanner->ResetFoundAddresses();
+        
+        m_InputValue = 0.0;
     }
 
     ImGui::EndChild();
@@ -219,6 +227,9 @@ void UI::OnVariableEditing() {
 
         m_ProcessScanner->SetState(ScanState::InputVariable);
         m_ProcessScanner->ResetFoundAddresses();
+
+        m_InputValue = 0.0;
+        variable_name.clear();
     }
 
     ImGui::EndChild();

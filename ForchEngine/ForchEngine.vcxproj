@@ -258,9 +258,6 @@
   <ItemGroup>
     <CopyFileToFolders Include="Icons\icon3.png" />
   </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="boost\boost-1.88.0-LICENSE_1_0.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

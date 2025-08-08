@@ -22,6 +22,8 @@ private:
     std::string m_EnteringProcessName;
     std::string m_ErrorLog;
 
+    Value m_InputValue = 0.0;
+
 private:
     std::shared_ptr<ProcessScanner> m_ProcessScanner;
 };
