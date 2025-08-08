@@ -166,6 +166,10 @@ void UI::OnFiltering() {
 
     if (found_addresses == 1)
         m_ProcessScanner->SetState(ScanState::VariableEditing);
+    else if (found_addresses == 2) { // there may be a bug when one variable turns into two variables
+        m_ProcessScanner->GetFoundAddresses().pop_back();
+        m_ProcessScanner->SetState(ScanState::VariableEditing);
+    }
     else if (!found_addresses) {
         m_ErrorLog = "Failed to filter. No matches found. Scanning again";
         m_ProcessScanner->SetState(ScanState::Scanning);
@@ -214,6 +218,7 @@ void UI::OnVariableEditing() {
         m_ProcessScanner->AddNewVariable(variable);
 
         m_ProcessScanner->SetState(ScanState::InputVariable);
+        m_ProcessScanner->ResetFoundAddresses();
     }
 
     ImGui::EndChild();

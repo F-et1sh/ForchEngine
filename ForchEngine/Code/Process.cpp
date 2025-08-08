@@ -66,7 +66,7 @@ void ProcessScanner::Filter(Value new_value) {
         break;
     case ScanType::Float64:
         epsilon = 1e-10;
-        FilterResults<Value>(m_ProcessHandle, m_FoundAddresses, new_value, epsilon);
+        FilterResults<double>(m_ProcessHandle, m_FoundAddresses, new_value, epsilon);
         break;
     case ScanType::Int32:
         epsilon = 0.0;

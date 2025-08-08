@@ -139,6 +139,9 @@
     <CopyFileToFolders Include="Icons\icon3.png">
       <Filter>Icons</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="boost\boost-1.88.0-LICENSE_1_0.txt">
+      <Filter>Licenses</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="Fonts\OpenSans\open_sans.ttf">
