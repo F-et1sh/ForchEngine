@@ -175,7 +175,7 @@ void UI::OnInputProcessName() {
 }
 
 void UI::DrawAllScannerWindows() {
-    for (size_t i = 0; i > m_ScannersManager->GetScanners().size(); i++) {
+    for (size_t i = 0; i < m_ScannersManager->GetScanners().size(); i++) {
         std::string id = std::string("##ScannerWindow_") + std::to_string(i);
         ImGui::PushID(id.c_str());
 

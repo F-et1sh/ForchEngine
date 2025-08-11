@@ -33,7 +33,10 @@ Window::Window(size_t resolution_x, size_t resolution_y, const std::string& titl
     }
 
     GLFWimage images[1];
-    images[0].pixels = stbi_load("Icons/icon3_small.png", &images[0].width, &images[0].height, nullptr, STBI_rgb_alpha);
+    
+                           images[0].pixels = stbi_load("Icons/icon3_small.png", &images[0].width, &images[0].height, nullptr, STBI_rgb_alpha); // Visual Studio
+    if (!images[0].pixels) images[0].pixels = stbi_load("icon3_small.png"      , &images[0].width, &images[0].height, nullptr, STBI_rgb_alpha); // Build
+    
     glfwSetWindowIcon(m_Window, 1, images);
     stbi_image_free(images[0].pixels);
 
@@ -46,6 +49,8 @@ Window::Window(size_t resolution_x, size_t resolution_y, const std::string& titl
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
+    io.IniFilename = nullptr;
+    
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
         style.WindowRounding = 0.0f;
