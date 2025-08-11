@@ -3,11 +3,12 @@
 #include "ScannersManager.h"
 
 struct UI_ScannerData {
+    bool is_renaming = false;
+    bool is_removing = false;
+    bool is_back_pressed = false;
+    
     std::string name;
     std::string rename_buffer;
-    bool is_renaming = false;
-
-    bool is_removing = false;
 
     ImVec2 window_position;
     bool is_need_adjust_position = false;

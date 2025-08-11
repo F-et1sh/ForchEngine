@@ -165,6 +165,7 @@ void UI::OnInputProcessName() {
     if (ImGui::Button("Search", ImVec2(content_size.x - 20, 0)) || ImGui::IsKeyPressed(ImGuiKey_Enter)) {
         try {
             m_ScannersManager->Initialize(FE2D::string_to_wstring(m_EnteringProcessName));
+            m_ErrorLog.clear();
         }
         catch (const std::exception& e) {
             m_ErrorLog = e.what();
@@ -195,12 +196,9 @@ void UI::DrawAllScannerWindows() {
         ui_scanner.window_position = ImGui::GetWindowPos();
 
         if (ImGui::BeginPopupContextItem()) {
-            if (ImGui::MenuItem("Rename")) {
-                ui_scanner.is_renaming = true;
-            }
-            if (ImGui::MenuItem("Remove")) {
-                ui_scanner.is_removing = true;
-            }
+            if (ImGui::MenuItem("Rename")) ui_scanner.is_renaming = true;
+            if (ImGui::MenuItem("Remove")) ui_scanner.is_removing = true;
+            if (ImGui::MenuItem("Back"))   ui_scanner.is_back_pressed = true;
             ImGui::EndPopup();
         }
 
@@ -219,8 +217,9 @@ void UI::DrawAllScannerWindows() {
 }
 
 void UI::HandlePopups(UI_ScannerData& scanner_data, size_t i) {
-    if (scanner_data.is_renaming) ImGui::OpenPopup("Rename Variable");
-    if (scanner_data.is_removing) ImGui::OpenPopup("Remove Variable");
+    if (scanner_data.is_renaming    ) ImGui::OpenPopup("Rename Variable");
+    if (scanner_data.is_removing    ) ImGui::OpenPopup("Remove Variable");
+    if (scanner_data.is_back_pressed) ImGui::OpenPopup("Reset Variable");
 
     if (ImGui::BeginPopup("Rename Variable", ImGuiWindowFlags_NoResize)) {
         InputText("Name", scanner_data.rename_buffer);
@@ -257,6 +256,29 @@ void UI::HandlePopups(UI_ScannerData& scanner_data, size_t i) {
 
         if (ImGui::Button("No") || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
             scanner_data.is_removing = false;
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+
+    if (ImGui::BeginPopup("Reset Variable", ImGuiWindowFlags_NoResize)) {
+        ImGui::Text("Reset the variable?");
+        
+        if (ImGui::Button("Yes") || ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+            scanner_data.is_back_pressed = false;
+            m_ErrorLog.clear();
+            auto& scanner = m_ScannersManager->GetScanners()[i];
+            scanner.state = ScanState::InputVariable;
+            scanner.found_addresses.clear();
+            scanner.value = 0.0;
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("No") || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+            scanner_data.is_back_pressed = false;
             ImGui::CloseCurrentPopup();
         }
 
@@ -324,15 +346,6 @@ void UI::OnFiltering(ScannerData& scanner_data) {
             m_ErrorLog = e.what();
             scanner_data.state = ScanState::InputVariable;
         }
-    }
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Back")) {
-        m_ErrorLog.clear();
-        scanner_data.state = ScanState::InputVariable;
-        scanner_data.found_addresses.clear();
-        scanner_data.value = 0.0;
     }
 }
 
