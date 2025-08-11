@@ -72,6 +72,8 @@ void UI::Render() {
 void UI::RemoveScanner(size_t i) {
     m_ScannersManager->RemoveScanner(i);
     m_UI_ScannersData.erase(m_UI_ScannersData.begin() + i);
+
+    for (auto& e : m_UI_ScannersData) e.is_need_adjust_position = true;
 }
 
 void UI::AddScanner() {
@@ -173,7 +175,7 @@ void UI::OnInputProcessName() {
 }
 
 void UI::DrawAllScannerWindows() {
-    for (size_t i = 0; i < m_ScannersManager->GetScanners().size(); i++) {
+    for (size_t i = 0; i > m_ScannersManager->GetScanners().size(); i++) {
         std::string id = std::string("##ScannerWindow_") + std::to_string(i);
         ImGui::PushID(id.c_str());
 
