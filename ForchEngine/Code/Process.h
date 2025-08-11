@@ -29,6 +29,9 @@ struct ScannerData {
     ScanState state = ScanState::InputVariable;
 
     FoundAddressesContainer found_addresses;
+
+    std::chrono::time_point<std::chrono::steady_clock> last_apply_time;
+    bool apply_every_second = false;
 };
 
 template<typename T>

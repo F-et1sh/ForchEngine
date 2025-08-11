@@ -11,6 +11,7 @@
 #include <cmath>
 #include <cstdint>
 #include <coroutine>
+#include <chrono>
 
 // OpenGL
 #define GLEW_STATIC

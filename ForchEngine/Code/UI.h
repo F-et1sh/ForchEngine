@@ -5,7 +5,7 @@
 struct UI_ScannerData {
     bool is_renaming = false;
     bool is_removing = false;
-    bool is_back_pressed = false;
+    bool is_resetting = false;
     
     std::string name;
     std::string rename_buffer;

@@ -198,7 +198,7 @@ void UI::DrawAllScannerWindows() {
         if (ImGui::BeginPopupContextItem()) {
             if (ImGui::MenuItem("Rename")) ui_scanner.is_renaming = true;
             if (ImGui::MenuItem("Remove")) ui_scanner.is_removing = true;
-            if (ImGui::MenuItem("Back"))   ui_scanner.is_back_pressed = true;
+            if (ImGui::MenuItem("Reset"))  ui_scanner.is_resetting = true;
             ImGui::EndPopup();
         }
 
@@ -217,9 +217,9 @@ void UI::DrawAllScannerWindows() {
 }
 
 void UI::HandlePopups(UI_ScannerData& scanner_data, size_t i) {
-    if (scanner_data.is_renaming    ) ImGui::OpenPopup("Rename Variable");
-    if (scanner_data.is_removing    ) ImGui::OpenPopup("Remove Variable");
-    if (scanner_data.is_back_pressed) ImGui::OpenPopup("Reset Variable");
+    if (scanner_data.is_renaming ) ImGui::OpenPopup("Rename Variable");
+    if (scanner_data.is_removing ) ImGui::OpenPopup("Remove Variable");
+    if (scanner_data.is_resetting) ImGui::OpenPopup("Reset Variable");
 
     if (ImGui::BeginPopup("Rename Variable", ImGuiWindowFlags_NoResize)) {
         InputText("Name", scanner_data.rename_buffer);
@@ -266,7 +266,7 @@ void UI::HandlePopups(UI_ScannerData& scanner_data, size_t i) {
         ImGui::Text("Reset the variable?");
         
         if (ImGui::Button("Yes") || ImGui::IsKeyPressed(ImGuiKey_Enter)) {
-            scanner_data.is_back_pressed = false;
+            scanner_data.is_resetting = false;
             m_ErrorLog.clear();
             auto& scanner = m_ScannersManager->GetScanners()[i];
             scanner.state = ScanState::InputVariable;
@@ -278,7 +278,7 @@ void UI::HandlePopups(UI_ScannerData& scanner_data, size_t i) {
         ImGui::SameLine();
 
         if (ImGui::Button("No") || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-            scanner_data.is_back_pressed = false;
+            scanner_data.is_resetting = false;
             ImGui::CloseCurrentPopup();
         }
 
@@ -320,7 +320,9 @@ void UI::OnFiltering(ScannerData& scanner_data) {
     if (found_addresses == 1)
         scanner_data.state = ScanState::VariableEditing;
     else if (found_addresses == 2) { // there may be a bug when one variable turns into two variables
-        scanner_data.found_addresses.pop_back();
+        auto& arr = scanner_data.found_addresses;
+        arr[0] = arr[1];
+        arr.pop_back();
         scanner_data.state = ScanState::VariableEditing;
     }
     else if (!found_addresses) {
@@ -351,8 +353,26 @@ void UI::OnFiltering(ScannerData& scanner_data) {
 
 void UI::OnVariableEditing(ScannerData& scanner_data) {
     ImGui::Text("Control the value");
-    if (InputValue(scanner_data))
-        m_ScannersManager->Write(scanner_data);
+    InputValue(scanner_data);
+
+    if (ImGui::Button("Apply")) m_ScannersManager->Write(scanner_data);
+    ImGui::SameLine();
+    if (ImGui::Button(scanner_data.apply_every_second ? "Cancel" : "Apply every second")) {
+        scanner_data.apply_every_second = !scanner_data.apply_every_second;
+        if (scanner_data.apply_every_second) {
+            scanner_data.last_apply_time = std::chrono::steady_clock::now();
+        }
+    }
+
+    if (scanner_data.apply_every_second) {
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - scanner_data.last_apply_time);
+
+        if (elapsed.count() >= 1) {
+            m_ScannersManager->Write(scanner_data);
+            scanner_data.last_apply_time = now;
+        }
+    }
 }
 
 bool UI::InputValue(ScannerData& scanner_data) {
