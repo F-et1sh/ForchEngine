@@ -25,14 +25,14 @@
     <Filter Include="Fonts">
       <UniqueIdentifier>{caa9f188-2f3a-4864-97f9-a5fa95e5f1b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ImGui">
-      <UniqueIdentifier>{77a0522a-3f14-4e15-852b-06b4a8ad7998}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\STB Image">
       <UniqueIdentifier>{0ea3f434-9bf5-4d26-b496-98dd0311f933}</UniqueIdentifier>
     </Filter>
     <Filter Include="Icons">
       <UniqueIdentifier>{19e9ab67-b8d8-4fa8-b3c7-e9519107a556}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Process Manager">
+      <UniqueIdentifier>{3c15d998-efe2-405e-a786-d42d9cb338d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="Code\UI.cpp">
       <Filter>Code\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ScannersManager.cpp">
+      <Filter>Code\Process Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +119,9 @@
     <ClInclude Include="STB Image\stb_image.h">
       <Filter>Code\STB Image</Filter>
     </ClInclude>
+    <ClInclude Include="Code\ScannersManager.h">
+      <Filter>Code\Process Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="imgui\imgui_LICENSE.txt">
@@ -123,9 +129,6 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="OpenGL\GLEW_LICENSE.txt">
       <Filter>Licenses</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="imgui.ini">
-      <Filter>ImGui</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="STB Image\STB_Image_License (MIT).txt">
       <Filter>Licenses</Filter>

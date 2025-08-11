@@ -7,9 +7,9 @@ constexpr int WINDOW_RESOLUTION_HEIGHT = 400;
 constexpr std::string_view WINDOW_TITLE = "Forch Engine";
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) {
-    std::unique_ptr<Window> window = std::make_unique<Window>(WINDOW_RESOLUTION_WIDTH, WINDOW_RESOLUTION_HEIGHT, WINDOW_TITLE.data());
-    std::shared_ptr<ProcessScanner> process_scanner = std::make_shared<ProcessScanner>();
-    std::unique_ptr<UI> ui = std::make_unique<UI>(process_scanner);
+    std::shared_ptr<Window> window = std::make_shared<Window>(WINDOW_RESOLUTION_WIDTH, WINDOW_RESOLUTION_HEIGHT, WINDOW_TITLE.data());
+    std::shared_ptr<ScannersManager> scanners_manager = std::make_shared<ScannersManager>();
+    std::unique_ptr<UI> ui = std::make_unique<UI>(window, scanners_manager);
 
     while (window->IsOpen()) {
         window->ClearScreen();

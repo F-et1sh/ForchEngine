@@ -7,12 +7,15 @@ public:
 
 	void CheckClose();
 	void ClearScreen();
+
 	void BeginImGuiFrame();
 	void EndImGuiFrame();
+
 	void SwapBuffers();
 	void PollEvents();
 
 	inline bool IsOpen() const noexcept { return m_IsRunning; }
+	inline void CallCloseRequest()const noexcept { glfwSetWindowShouldClose(m_Window, GLFW_TRUE); }
 
 private:
 	bool m_IsRunning = false;
