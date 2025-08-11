@@ -272,6 +272,8 @@ void UI::HandlePopups(UI_ScannerData& scanner_data, size_t i) {
             scanner.state = ScanState::InputVariable;
             scanner.found_addresses.clear();
             scanner.value = 0.0;
+            scanner.apply_every_second = false;
+            scanner.last_apply_time = {};
             ImGui::CloseCurrentPopup();
         }
 
