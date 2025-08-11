@@ -257,6 +257,9 @@
   <ItemGroup>
     <CopyFileToFolders Include="Icons\icon3.png" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Icons\icon3_small.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
