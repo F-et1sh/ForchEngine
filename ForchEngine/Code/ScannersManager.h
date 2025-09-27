@@ -11,6 +11,8 @@ public:
 	void Initialize(const std::wstring& process_name);
 	inline bool IsInitialized()const noexcept { return !m_ProcessName.empty(); }
 
+	inline bool IsProcessStillRunning()const { return IsProcessRunning(m_ProcessHandle); }
+
 	void RemoveScanner(size_t i);
 	void AddScanner();
 	inline std::vector<ScannerData>& GetScanners()noexcept { return m_ScannersData; }
@@ -27,4 +29,5 @@ private:
 
 private:
 	std::vector<ScannerData> m_ScannersData;
+
 };

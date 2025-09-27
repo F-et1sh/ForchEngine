@@ -37,8 +37,9 @@ private:
     void OnScanning(ScannerData& scanner_data);
     void OnFiltering(ScannerData& scanner_data);
     void OnVariableEditing(ScannerData& scanner_data);
+    void OnListEditing(ScannerData& scanner_data);
 
-    bool InputValue(ScannerData& scanner_data);
+    bool InputValue(ScannerData& scanner_data, const std::string& label = "##label");
 
 private:
     std::string m_EnteringProcessName;

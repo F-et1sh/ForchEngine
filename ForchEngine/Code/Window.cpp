@@ -23,6 +23,18 @@ Window::Window(size_t resolution_x, size_t resolution_y, const std::string& titl
         std::cerr << "ERROR : Failed to Initialize Window" << std::endl;
         return;
     }
+
+#ifdef WIN32
+    HWND hwnd = glfwGetWin32Window(m_Window);
+    SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+    //SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+
+    //SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
+
+    //SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
+
+#endif // WIN32
     
     glfwMakeContextCurrent(m_Window);
     
@@ -176,4 +188,11 @@ void Window::SwapBuffers() {
 
 void Window::PollEvents() {
     glfwPollEvents();
+}
+
+void Window::EnableAlwaysOnTop(bool enable) {
+#ifdef WIN32
+    HWND hwnd = glfwGetWin32Window(m_Window);
+    SetWindowPos(hwnd, enable ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+#endif // WIN32
 }

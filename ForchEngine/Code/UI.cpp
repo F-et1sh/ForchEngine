@@ -46,13 +46,17 @@ void UI::Render() {
         ImGui::Begin("##ui", nullptr, flags);
     }
 
-    if (!m_ScannersManager->IsInitialized())
-        this->OnInputProcessName();
+    if (!m_ScannersManager->IsInitialized()) this->OnInputProcessName();
+    else if (!m_ScannersManager->IsProcessStillRunning()) {
+        m_ScannersManager->Reset();
+        m_UI_ScannersData.clear();
+        m_ErrorLog = "Process has terminated";
+    }
 
     this->DrawAllScannerWindows();
 
     if (m_ScannersManager->IsInitialized() && !m_UI_ScannersData.size()) {
-        constexpr std::string_view text = "There is no variables yet. To create a new variable go to Tool -> New Variable";
+        constexpr static std::string_view text = "There is no variables yet. To create a new variable go to Tool -> New Variable";
         float text_width = ImGui::CalcTextSize(text.data()).x;
         ImVec2 center = ImGui::GetIO().DisplaySize;
         center.x -= text_width;
@@ -63,6 +67,12 @@ void UI::Render() {
     }
 
     if (!m_ErrorLog.empty()) {
+        float text_width = ImGui::CalcTextSize(m_ErrorLog.c_str()).x;
+        ImVec2 center = ImGui::GetIO().DisplaySize;
+        center.x -= text_width;
+        center.x /= 4;
+        center.y /= 2;
+        ImGui::SetCursorPos(center);
         ImGui::TextColored(ImVec4(0.9f, 0.22f, 0.2f, 1.00f), "ERROR : %s", m_ErrorLog.c_str());
     }
 
@@ -133,6 +143,12 @@ void UI::OnMainMenuBar() {
     if (ImGui::BeginMenu("File")) {
         if (ImGui::MenuItem("Exit"))
             m_Window->CallCloseRequest();
+        
+        static bool always_on_top = false;
+        if (ImGui::MenuItem("Always On Top", {}, always_on_top)) {
+            always_on_top = !always_on_top;
+            this->m_Window->EnableAlwaysOnTop(always_on_top);
+        }
 
         ImGui::EndMenu();
     }
@@ -205,10 +221,11 @@ void UI::DrawAllScannerWindows() {
         this->HandlePopups(ui_scanner, i);
 
         switch (scanner.state) {
-            case ScanState::InputVariable  : this->OnInputVariable  (scanner); break;
-            case ScanState::Scanning       : this->OnScanning       (scanner); break;
-            case ScanState::Filtering      : this->OnFiltering      (scanner); break;
-            case ScanState::VariableEditing: this->OnVariableEditing(scanner); break;
+            case ScanState::InputVariable   : this->OnInputVariable  (scanner); break;
+            case ScanState::Scanning        : this->OnScanning       (scanner); break;
+            case ScanState::Filtering       : this->OnFiltering      (scanner); break;
+            case ScanState::VariableEditing : this->OnVariableEditing(scanner); break;
+            case ScanState::ListEditing     : this->OnListEditing    (scanner); break;
         }
 
         ImGui::End();
@@ -319,14 +336,7 @@ void UI::OnScanning(ScannerData& scanner_data) {
 void UI::OnFiltering(ScannerData& scanner_data) {
     size_t found_addresses = scanner_data.found_addresses.size();
 
-    if (found_addresses == 1)
-        scanner_data.state = ScanState::VariableEditing;
-    else if (found_addresses == 2) { // there may be a bug when one variable turns into two variables
-        auto& arr = scanner_data.found_addresses;
-        arr[0] = arr[1];
-        arr.pop_back();
-        scanner_data.state = ScanState::VariableEditing;
-    }
+    if (found_addresses == 1) scanner_data.state = ScanState::VariableEditing;
     else if (!found_addresses) {
         m_ErrorLog = "Failed to filter. No matches found. Scanning again";
         scanner_data.state = ScanState::Scanning;
@@ -351,10 +361,14 @@ void UI::OnFiltering(ScannerData& scanner_data) {
             scanner_data.state = ScanState::InputVariable;
         }
     }
+
+    constexpr static int max_list_size = 25;
+    
+    if (found_addresses <= max_list_size && ImGui::Button("Open List")) scanner_data.state = ScanState::ListEditing;
 }
 
 void UI::OnVariableEditing(ScannerData& scanner_data) {
-    ImGui::Text("Control the value");
+    ImGui::Text("Variable Editing");
     InputValue(scanner_data);
 
     if (ImGui::Button("Apply")) m_ScannersManager->Write(scanner_data);
@@ -377,34 +391,94 @@ void UI::OnVariableEditing(ScannerData& scanner_data) {
     }
 }
 
-bool UI::InputValue(ScannerData& scanner_data) {
+void UI::OnListEditing(ScannerData& scanner_data) {
+    if (ImGui::Button("Back"))
+        scanner_data.state = ScanState::Filtering;
+
+    constexpr static std::string_view warning_label = "Be very careful using this list\nOne wrong move and application may crush\nVariables will apply automatically";
+    ImGui::TextColored(ImVec4(0.9f, 0.3f, 0.25f, 1.00f), warning_label.data());
+
+    constexpr static std::string_view addresses_label = "Address";
+    constexpr static std::string_view values_label = "Value";
+
+    ImGui::Text(addresses_label.data());
+
+    constexpr static float offset_from_x = 100.0f;
+
+    ImGui::SameLine(offset_from_x);
+
+    ImGui::Text(values_label.data());
+
+    size_t id_to_remove = ~0;
+
+    for (size_t i = 0; i < scanner_data.found_addresses.size(); i++) {
+        auto& found_address = scanner_data.found_addresses[i];
+
+        std::string address_label = std::to_string(found_address.address);
+        std::string value_label = std::to_string(found_address.value);
+
+        ImGui::TextColored(ImVec4(0.9f, 0.3f, 0.25f, 1.00f), address_label.c_str());
+
+        ImGui::SameLine(offset_from_x);
+
+        ScannerData control_data{};
+        control_data.scan_type = scanner_data.scan_type;
+        control_data.value = found_address.value;
+        control_data.found_addresses.emplace_back(found_address);
+
+        std::string control_label = "##address_" + std::to_string(found_address.address);
+
+        ImGui::PushItemWidth(offset_from_x);
+        
+        this->InputValue(control_data, control_label);
+        
+        ImGui::PopItemWidth();
+
+        found_address.value = control_data.value;
+        m_ScannersManager->Write(control_data);
+
+        ImGui::SameLine();
+
+        std::string remove_label = "Remove##" + std::to_string(found_address.address);
+
+        if (ImGui::Button(remove_label.c_str())) id_to_remove = i;
+    }
+
+    if (id_to_remove != ~0) {
+        auto begin = scanner_data.found_addresses.begin();
+        scanner_data.found_addresses.erase(begin + id_to_remove);
+    }
+}
+
+bool UI::InputValue(ScannerData& scanner_data, const std::string& label) {
     switch (scanner_data.scan_type) {
     case ScanType::Float32: {
         float temp_value = scanner_data.value;
-        bool result = ImGui::InputFloat("##label", &temp_value);
+        bool result = ImGui::InputFloat(label.c_str(), &temp_value);
         scanner_data.value = temp_value;
         return result;
     }
     break;
     case ScanType::Float64: {
         double temp_value = scanner_data.value;
-        bool result = ImGui::InputDouble("##label", &temp_value);
+        bool result = ImGui::InputDouble(label.c_str(), &temp_value);
         scanner_data.value = temp_value;
         return result;
     }
     break;
     case ScanType::Int32: {
         int temp_value = scanner_data.value;
-        bool result = ImGui::InputInt("##label", &temp_value);
+        bool result = ImGui::InputInt(label.c_str(), &temp_value);
         scanner_data.value = temp_value;
         return result;
     }
     break;
     case ScanType::Int64: {
         long long temp_value = scanner_data.value;
-        bool result = ImGui::InputScalar("##label", ImGuiDataType_S64, &temp_value);
+        bool result = ImGui::InputScalar(label.c_str(), ImGuiDataType_S64, &temp_value);
         scanner_data.value = temp_value;
         return result;
     }
     }
+    return false;
 }

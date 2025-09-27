@@ -17,6 +17,8 @@ public:
 	inline bool IsOpen() const noexcept { return m_IsRunning; }
 	inline void CallCloseRequest()const noexcept { glfwSetWindowShouldClose(m_Window, GLFW_TRUE); }
 
+	void EnableAlwaysOnTop(bool enable);
+
 private:
 	bool m_IsRunning = false;
 	GLFWwindow* m_Window = nullptr;

@@ -5,6 +5,7 @@ void ScannersManager::Reset() {
     m_ProcessName.clear();
     m_ProcessID = 0;
     m_ProcessHandle = 0;
+    m_ScannersData.clear();
 }
 
 void ScannersManager::Initialize(const std::wstring& process_name) {

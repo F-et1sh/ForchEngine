@@ -5,7 +5,7 @@ using ProcessHandle = HANDLE;
 using Value = double;
 
 enum class ScanType { None, Float32, Float64, Int32, Int64 };
-enum class ScanState { InputVariable, Scanning, Filtering, VariableEditing };
+enum class ScanState { InputVariable, Scanning, Filtering, VariableEditing, ListEditing };
 
 struct FoundAddress {
     uintptr_t address = 0;
@@ -66,6 +66,13 @@ static ProcessID GetProcessID(const std::wstring& process_name) {
     return process_id;
 }
 
+static bool IsProcessRunning(ProcessHandle process) {
+    ProcessID exit_code = 0;
+    if (!GetExitCodeProcess(process, &exit_code)) return false;
+    if (exit_code != STILL_ACTIVE) return false;
+    return true;
+}
+
 template<CValue T>
 inline static bool MatchValue(T val, T target, Value epsilon) {
     if constexpr (std::is_floating_point_v<T>)
@@ -116,13 +123,32 @@ inline static void FilterResults(ProcessHandle process_handle, FoundAddressesCon
 static bool WriteValue(ProcessHandle process_handle, uintptr_t address, ScanType type, Value new_value) {
     SIZE_T size = 0;
     switch (type) {
-    case ScanType::Float32: { float     v = (float)new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
-    case ScanType::Float64: { Value    v = new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
-    case ScanType::Int32: { int       v = (int)new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
-    case ScanType::Int64: { long long v = (long long)new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
+        case ScanType::Float32: { float     v =     (float)new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
+        case ScanType::Float64: { Value     v =            new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
+        case ScanType::Int32  : { int       v =       (int)new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
+        case ScanType::Int64  : { long long v = (long long)new_value; size = sizeof(v); return WriteProcessMemory(process_handle, (LPVOID)address, &v, size, nullptr); }
     }
     return false;
 }
+
+//uintptr_t GetModuleBase(DWORD pid, const wchar_t* moduleName) {
+//    uintptr_t result = 0;
+//    HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, pid);
+//    if (snap != INVALID_HANDLE_VALUE) {
+//        MODULEENTRY32W me;
+//        me.dwSize = sizeof(me);
+//        if (Module32FirstW(snap, &me)) {
+//            do {
+//                if (!_wcsicmp(me.szModule, moduleName)) {
+//                    result = (uintptr_t)me.modBaseAddr;
+//                    break;
+//                }
+//            } while (Module32NextW(snap, &me));
+//        }
+//    }
+//    CloseHandle(snap);
+//    return result;
+//}
 
 class ProcessScanner { // TODO : Remove
 public:
