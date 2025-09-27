@@ -199,7 +199,7 @@ void UI::DrawAllScannerWindows() {
         auto& scanner = m_ScannersManager->GetScanners()[i];
         auto& ui_scanner = m_UI_ScannersData[i];
         
-        ImGui::SetNextWindowSizeConstraints({ 250, 150 }, {1000, 600});
+        ImGui::SetNextWindowSizeConstraints({ 250, 150 }, { 1000, 600 });
 
         if (ui_scanner.is_need_adjust_position) {
             ImGui::SetNextWindowPos(ui_scanner.window_position);
