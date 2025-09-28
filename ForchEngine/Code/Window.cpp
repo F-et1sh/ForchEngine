@@ -69,7 +69,7 @@ Window::Window(size_t resolution_x, size_t resolution_y, const std::string& titl
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
     ImGui_ImplOpenGL3_Init("#version 460");
 
-    this->ConfigureImGuiStyle();
+    this->setDefaultStyle();
 
     m_IsRunning = true;
 }
@@ -138,18 +138,23 @@ void Window::EnableTransparentMode(bool enable) {
     if (enable) {
         SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
         SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
-
-        m_IsThemeTransparent = true;
+        
+        m_IsStyleTransparent = true;
     }
     else {
         LONG ex_style = GetWindowLong(hwnd, GWL_EXSTYLE);
         ex_style &= ~WS_EX_LAYERED;
         SetWindowLong(hwnd, GWL_EXSTYLE, ex_style);
-        
-        m_IsThemeTransparent = false;
+
+        m_IsStyleTransparent = false;
     }
-    
-    this->ConfigureImGuiStyle(); // update imgui style
+
+    switch (m_CurrentImGuiStyle) {
+        case 0: this->setDefaultStyle     (); break;
+        case 1: this->setImGuiClassicStyle(); break;
+        case 2: this->setImGuiDarkStyle   (); break;
+        case 3: this->setImGuiLightStyle  (); break;
+    }
 }
 
 void Window::EnableAlwaysOnTop(bool enable) {
@@ -159,7 +164,9 @@ void Window::EnableAlwaysOnTop(bool enable) {
 #endif // WIN32
 }
 
-void Window::ConfigureImGuiStyle()const {
+void Window::setDefaultStyle() {
+    m_CurrentImGuiStyle = 0;
+
     ImGuiIO& io = ImGui::GetIO();
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -174,36 +181,15 @@ void Window::ConfigureImGuiStyle()const {
     ImVec4 col_red                        = ImVec4(0.898f, 0.224f, 0.208f, 1.00f);
     ImVec4 col_orange                     = ImVec4(1.000f, 0.596f, 0.000f, 1.00f);
     ImVec4 col_white                      = ImVec4(1.000f, 1.000f, 1.000f, 1.00f);
-    ImVec4 col_grey                       = ImVec4(0.100f, 0.100f, 0.100f, 1.00f);
-    ImVec4 col_dark_grey                  = ImVec4(0.500f, 0.500f, 0.500f, 1.00f);
-    ImVec4 col_dark_grey2                 = ImVec4(0.150f, 0.150f, 0.150f, 1.00f);
-    ImVec4 col_dark_grey3                 = ImVec4(0.250f, 0.250f, 0.250f, 1.00f);
-    ImVec4 col_dark_grey4                 = ImVec4(0.080f, 0.080f, 0.080f, 1.00f);
-    ImVec4 col_dark_grey5                 = ImVec4(0.120f, 0.120f, 0.120f, 1.00f);
-    ImVec4 col_empty                      = ImVec4(0.000f, 0.000f, 0.000f, 0.00f);
-    
-    if (!m_IsThemeDark) {
-        col_bg         = ImVec4(0.95f, 0.95f, 0.95f, 1.00f);
-        col_white      = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
-        col_dark_grey  = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-        col_dark_grey2 = ImVec4(0.80f, 0.80f, 0.80f, 1.00f);
-        col_dark_grey3 = ImVec4(0.75f, 0.75f, 0.75f, 1.00f);
-        col_dark_grey4 = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
-        col_dark_grey5 = ImVec4(0.85f, 0.85f, 0.85f, 1.00f);
-        col_red        = ImVec4(0.80f, 0.20f, 0.20f, 1.00f);
-        col_orange     = ImVec4(0.95f, 0.55f, 0.00f, 1.00f);
-    }
-
-    if (m_IsThemeTransparent) col_bg      = ImVec4(0.000f, 0.000f, 0.000f, 0.00f);
     
     colors[ImGuiCol_WindowBg]             = col_bg;
     colors[ImGuiCol_ChildBg]              = col_bg;
-    colors[ImGuiCol_PopupBg]              = col_dark_grey4;
+    colors[ImGuiCol_PopupBg]              = ImVec4(0.08f, 0.08f, 0.08f, 0.98f);
     
     colors[ImGuiCol_Text]                 = col_white;
-    colors[ImGuiCol_TextDisabled]         = col_dark_grey;
+    colors[ImGuiCol_TextDisabled]         = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
     
-    colors[ImGuiCol_FrameBg]              = col_dark_grey5;
+    colors[ImGuiCol_FrameBg]              = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
     colors[ImGuiCol_FrameBgHovered]       = col_orange;
     colors[ImGuiCol_FrameBgActive]        = col_red;
     
@@ -219,32 +205,83 @@ void Window::ConfigureImGuiStyle()const {
     colors[ImGuiCol_SliderGrab]           = col_orange;
     colors[ImGuiCol_SliderGrabActive]     = col_red;
     
-    colors[ImGuiCol_ScrollbarBg]          = col_dark_grey;
-    colors[ImGuiCol_ScrollbarGrab]        = col_dark_grey3;
+    colors[ImGuiCol_ScrollbarBg]          = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrab]        = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
     colors[ImGuiCol_ScrollbarGrabHovered] = col_orange;
     colors[ImGuiCol_ScrollbarGrabActive]  = col_red;
     
-    colors[ImGuiCol_Tab]                  = col_dark_grey2;
+    colors[ImGuiCol_Tab]                  = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
     colors[ImGuiCol_TabHovered]           = col_orange;
     colors[ImGuiCol_TabActive]            = col_red;
-    colors[ImGuiCol_TabUnfocused]         = col_dark_grey2;
+    colors[ImGuiCol_TabUnfocused]         = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
     colors[ImGuiCol_TabUnfocusedActive]   = col_red;
     
     colors[ImGuiCol_Border]               = col_red;
-    colors[ImGuiCol_BorderShadow]         = col_empty;
+    colors[ImGuiCol_BorderShadow]         = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 
     colors[ImGuiCol_TitleBg]              = col_red;
     colors[ImGuiCol_TitleBgActive]        = col_red;
-    colors[ImGuiCol_TitleBgCollapsed]     = col_dark_grey;
+    colors[ImGuiCol_TitleBgCollapsed]     = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
 
     colors[ImGuiCol_ResizeGrip]           = col_bg;
     colors[ImGuiCol_ResizeGripHovered]    = col_orange;
     colors[ImGuiCol_ResizeGripActive]     = col_orange;
-    
+
+    colors[ImGuiCol_MenuBarBg]            = col_bg;
+
     style.FrameRounding     = 4.0f;
     style.GrabRounding      = 3.0f;
     style.WindowRounding    = 4.0f;
     style.ScrollbarRounding = 3.0f;
+
+    if (m_IsStyleTransparent) this->MakeImGuiStyleTransparent();
+}
+
+void Window::setImGuiClassicStyle() {
+    m_CurrentImGuiStyle = 1;
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::StyleColorsClassic(&style);
+
+    if (m_IsStyleTransparent) this->MakeImGuiStyleTransparent();
+}
+
+void Window::setImGuiDarkStyle() {
+    m_CurrentImGuiStyle = 2;
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::StyleColorsDark(&style);
+
+    if (m_IsStyleTransparent) this->MakeImGuiStyleTransparent();
+}
+
+void Window::setImGuiLightStyle() {
+    m_CurrentImGuiStyle = 3;
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::StyleColorsLight(&style);
+
+    if (m_IsStyleTransparent) this->MakeImGuiStyleTransparent();
+}
+
+void Window::MakeImGuiStyleTransparent() const {
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+
+    ImVec4* colors = style.Colors;
+
+    ImVec4 col_bg                         = ImVec4(0.000f, 0.000f, 0.000f, 1.00f);
+
+    colors[ImGuiCol_WindowBg]             = col_bg;
+    colors[ImGuiCol_ChildBg]              = col_bg;
+    colors[ImGuiCol_ResizeGrip]           = col_bg;
 }
 
 void Window::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {

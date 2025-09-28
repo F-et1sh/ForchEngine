@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO : Somehow refactor this code because this is just hardcoded at 4 AM
+
 class Window {
 public:
 	Window(size_t resolution_x, size_t resolution_y, const std::string& title);
@@ -20,8 +22,13 @@ public:
 	void EnableTransparentMode(bool enable);
 	void EnableAlwaysOnTop(bool enable);
 
+	void setDefaultStyle();
+	void setImGuiClassicStyle();
+	void setImGuiDarkStyle();
+	void setImGuiLightStyle();
+
 private:
-	void ConfigureImGuiStyle()const;
+	void MakeImGuiStyleTransparent()const;
 
 private:
 	static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
@@ -41,6 +48,6 @@ private:
 	double m_CursorOffsetY = 0.0;
 
 private:
-	bool m_IsThemeTransparent = true;
-	bool m_IsThemeDark = false;
+	int m_CurrentImGuiStyle = 0;
+	bool m_IsStyleTransparent = true;
 };

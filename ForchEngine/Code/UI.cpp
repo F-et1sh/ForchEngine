@@ -150,7 +150,8 @@ void UI::OnMainMenuBar() {
     }
 
     if (ImGui::BeginMenu("Window")) {
-        static bool always_on_top = false;
+        /* settings by default */
+        static bool always_on_top = true;
         static bool transparent   = true;
 
         if (ImGui::MenuItem("Transparent", {}, transparent)) {
@@ -163,6 +164,16 @@ void UI::OnMainMenuBar() {
             this->m_Window->EnableAlwaysOnTop(always_on_top);
         }
         
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Style")) {
+
+        if (ImGui::MenuItem("Default"       )) this->m_Window->setDefaultStyle     ();
+        if (ImGui::MenuItem("ImGui Classic" )) this->m_Window->setImGuiClassicStyle();
+        if (ImGui::MenuItem("ImGui Dark"    )) this->m_Window->setImGuiDarkStyle   ();
+        if (ImGui::MenuItem("ImGui Light"   )) this->m_Window->setImGuiLightStyle  ();
+
         ImGui::EndMenu();
     }
 
