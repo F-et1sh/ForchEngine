@@ -141,15 +141,28 @@ void UI::OnMainMenuBar() {
     if (!ImGui::BeginMainMenuBar()) return;
 
     if (ImGui::BeginMenu("File")) {
-        if (ImGui::MenuItem("Exit"))
-            m_Window->CallCloseRequest();
         
+        if (ImGui::MenuItem("Exit")) {
+            m_Window->CallCloseRequest();
+        }
+
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Window")) {
         static bool always_on_top = false;
+        static bool transparent   = true;
+
+        if (ImGui::MenuItem("Transparent", {}, transparent)) {
+            transparent = !transparent;
+            this->m_Window->EnableTransparentMode(transparent);
+        }
+
         if (ImGui::MenuItem("Always On Top", {}, always_on_top)) {
             always_on_top = !always_on_top;
             this->m_Window->EnableAlwaysOnTop(always_on_top);
         }
-
+        
         ImGui::EndMenu();
     }
 
